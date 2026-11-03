@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Heart, Minus, Plus, Truck } from "lucide-react";
 import { toast } from "sonner";
@@ -38,6 +38,7 @@ function ProductPage() {
 
 function ProductDetail({ slug }: { slug: string }) {
   const product = getProduct(slug)!;
+  const navigate = useNavigate();
   const { add, wishlist, toggleWish } = useStore();
   const views = gallery(product);
   const [view, setView] = useState(0);
@@ -97,7 +98,7 @@ function ProductDetail({ slug }: { slug: string }) {
             </div>
             <Button size="lg" className="h-11 flex-1" disabled={soldOut} onClick={() => {
               const r = add(product.id, variant, qty);
-              if (r.ok) toast.success(r.message, { action: { label: "View cart", onClick: () => { window.location.href = "/cart"; } } }); else toast.error(r.message);
+              if (r.ok) toast.success(r.message, { action: { label: "View cart", onClick: () => { void navigate({ to: "/cart" }); } } }); else toast.error(r.message);
             }}>{soldOut ? "Sold out" : "Add to cart"}</Button>
             <Button size="lg" variant="outline" className="h-11" aria-pressed={wished} aria-label={wished ? "Remove from wishlist" : "Save to wishlist"} onClick={() => { const a = toggleWish(product.id); toast(a ? "Saved to wishlist" : "Removed from wishlist"); }}>
               <Heart className={cn("size-4", wished && "fill-foreground")} />

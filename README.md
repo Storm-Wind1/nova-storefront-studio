@@ -21,13 +21,38 @@ A responsive, accessible e-commerce **frontend concept demo** for a fictional ca
 
 ## Run locally
 ```sh
-npm install      # or: bun install
-npm run dev      # http://localhost:8080
-npm run build
-npm test         # pricing and storage rules
+npm ci
+npm run dev             # original Lovable / TanStack Start development server
+npm run typecheck
+npm test
+npm run build           # original SSR target for Lovable-compatible hosting
+npm run build:pages     # standalone static frontend in dist-pages/
 ```
 
-## GitHub export / sync / deploy
-GitHub sync is **not connected yet**. To connect: in Lovable open the project → **Connectors / GitHub** → Connect → choose an account and create the repository. After that, changes sync both ways on the default branch.
+## GitHub sync
+This project is exported to `Storm-Wind1/nova-storefront-studio`. Commits on the linked branch sync with Lovable. Do not force-push or rewrite published history.
 
-Deploy: use Lovable's **Publish** button. This project uses server-side rendering (TanStack Start on an edge worker), so pure static hosting has **not been verified**; other hosts would need a TanStack Start-compatible adapter.
+## GitHub Pages deployment
+The separate client-only build uses Vite and TanStack Router with hash URLs, for example `/nova-storefront-studio/#/shop`. It contains no server code and does not require Node, Nitro, a database, or an API at runtime. The original Lovable build remains available separately.
+
+1. In this repository, open **Settings → Pages** and select **GitHub Actions** as the source. This requires a repository administrator. Private repositories require a GitHub plan that supports Pages for private repositories; changing source visibility is a separate owner decision.
+2. The `Deploy NOVA to GitHub Pages` workflow runs on pushes to `main` and can also be started manually from Actions. It installs the npm lockfile, checks types, runs the tests, builds the static site, uploads `dist-pages`, and deploys it.
+3. After a successful deployment, the default demo URL is `https://storm-wind1.github.io/nova-storefront-studio/`. A committed workflow alone does not mean this URL is live.
+
+The workflow uses the built-in short-lived GitHub token, with Pages and ID-token write permissions restricted to the deploy job. No personal token or secret is required in source. It cannot enable Pages on your behalf.
+
+For another repository name or custom domain, set `PAGES_BASE_PATH` and `PAGES_SITE_URL` when running `npm run build:pages`; update the workflow environment to match. The default values target this repository. Hash routing makes direct links and refresh work on static hosting without rewrite rules. The skip link focuses the main region without changing the route.
+
+To inspect the production output locally under the same prefix:
+```sh
+npm run build:pages
+mkdir -p /tmp/nova-preview
+ln -s "$PWD/dist-pages" /tmp/nova-preview/nova-storefront-studio
+python -m http.server 8765 --directory /tmp/nova-preview
+# Open http://localhost:8765/nova-storefront-studio/
+```
+
+Product photos and OFL-licensed Fraunces/Manrope fonts are bundled as local assets. Font licenses are provided in the installed Fontsource packages.
+
+## Deployment validation
+Strict TypeScript checks, the seven pricing/storage tests, the original production build and the static production build were run locally. Browser validation uses only `dist-pages` on a plain static server under the repository prefix, including search, filter/sort, product direct links and refresh, cart totals/quantity persistence, wishlist persistence, validated checkout, order review and confirmation refresh, no saved shipping/contact details, mobile navigation, asset requests and console errors. Remote availability must be checked after Pages is enabled and its deployment succeeds.

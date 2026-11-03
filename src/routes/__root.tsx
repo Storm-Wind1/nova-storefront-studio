@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
+import { IS_GITHUB_PAGES, assetUrl } from "@/lib/hosting";
 import { StoreProvider } from "@/lib/store";
 import { DemoBar, SiteFooter, SiteHeader } from "@/components/site";
 import { Toaster } from "@/components/ui/sonner";
@@ -64,12 +65,12 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
           >
             Try again
           </button>
-          <a
-            href="/"
+          <Link
+            to="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -92,10 +93,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" },
+      { rel: "icon", href: assetUrl("favicon.svg"), type: "image/svg+xml" },
     ],
   }),
   shellComponent: RootShell,
@@ -105,6 +103,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  if (IS_GITHUB_PAGES) return <>{children}</>;
   return (
     <html lang="en">
       <head>
@@ -123,12 +122,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {IS_GITHUB_PAGES && <HeadContent />}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <StoreProvider>
-        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-2">Skip to content</a>
+        <a href="#main" onClick={(event) => { event.preventDefault(); const main = document.getElementById("main"); main?.focus(); main?.scrollIntoView(); }} className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-2">Skip to content</a>
         <DemoBar />
         <SiteHeader />
-        <main id="main" className="min-h-[60vh]"><Outlet /></main>
+        <main id="main" tabIndex={-1} className="min-h-[60vh]"><Outlet /></main>
         <SiteFooter />
         <Toaster position="bottom-center" />
       </StoreProvider>

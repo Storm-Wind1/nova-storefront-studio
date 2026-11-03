@@ -1,3 +1,5 @@
+import { publicPageUrl } from "@/lib/hosting";
+
 export function pageMeta(title: string, description: string, path: string) {
   const full = `${title} — NOVA Store Demo`;
   return {
@@ -7,9 +9,9 @@ export function pageMeta(title: string, description: string, path: string) {
       { property: "og:title", content: full },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: path },
+      { property: "og:url", content: publicPageUrl(path) },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: path }],
+    links: [{ rel: "canonical", href: publicPageUrl(path) }],
   };
 }
