@@ -11,15 +11,15 @@ const SORTS = { featured: "Featured", newest: "Newest", "price-asc": "Price: low
 type Sort = keyof typeof SORTS;
 const PRICES = { any: "Any price", "50": "Under $50", "100": "Under $100", "200": "Under $200" } as const;
 
-interface ShopSearch { q?: string; cat?: CategoryId; max?: string; avail?: boolean; sort?: Sort }
+interface ShopSearch { q?: string | undefined; cat?: CategoryId | undefined; max?: string | undefined; avail?: boolean | undefined; sort?: Sort | undefined }
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (s: Record<string, unknown>): ShopSearch => ({
-    q: typeof s.q === "string" && s.q ? s.q.slice(0, 80) : undefined,
-    cat: categories.some((c) => c.id === s.cat) ? (s.cat as CategoryId) : undefined,
-    max: typeof s.max === "string" && s.max in PRICES && s.max !== "any" ? s.max : undefined,
-    avail: s.avail === true || s.avail === "true" ? true : undefined,
-    sort: typeof s.sort === "string" && s.sort in SORTS ? (s.sort as Sort) : undefined,
+    q: typeof s["q"] === "string" && s["q"] ? s["q"].slice(0, 80) : undefined,
+    cat: categories.some((c) => c.id === s["cat"]) ? (s["cat"] as CategoryId) : undefined,
+    max: typeof s["max"] === "string" && s["max"] in PRICES && s["max"] !== "any" ? s["max"] : undefined,
+    avail: s["avail"] === true || s["avail"] === "true" ? true : undefined,
+    sort: typeof s["sort"] === "string" && s["sort"] in SORTS ? (s["sort"] as Sort) : undefined,
   }),
   head: () => pageMeta("Shop all", "Browse 16 NOVA concept products across audio, workspace, power and carry. Search, filter and sort.", "/shop"),
   component: Shop,
