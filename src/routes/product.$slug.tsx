@@ -33,11 +33,16 @@ export const Route = createFileRoute("/product/$slug")({
 
 function ProductPage() {
   const { slug } = Route.useLoaderData();
+  return <ProductDetail key={slug} slug={slug} />;
+}
+
+function ProductDetail({ slug }: { slug: string }) {
   const product = getProduct(slug)!;
   const { add, wishlist, toggleWish } = useStore();
   const views = gallery(product);
   const [view, setView] = useState(0);
-  const firstAvailable = product.variants.find((v) => !v.soldOut)?.label ?? product.variants[0].label;
+  const current = views[view] ?? views[0];
+  const firstAvailable = product.variants.find((v) => !v.soldOut)?.label ?? product.variants[0]?.label ?? "";
   const [variant, setVariant] = useState(firstAvailable);
   const [qty, setQty] = useState(1);
   const soldOut = isSoldOut(product, variant);
@@ -54,7 +59,7 @@ function ProductPage() {
       <div className="mt-6 grid gap-10 lg:grid-cols-2">
         <div>
           <div className="aspect-square overflow-hidden rounded-xl bg-secondary">
-            <img src={views[view].src} alt={views[view].alt} className="size-full object-cover transition-transform duration-300" style={{ objectPosition: views[view].position, transform: `scale(${views[view].zoom})`, transformOrigin: views[view].position }} />
+            {current && <img src={current.src} alt={current.alt} className="size-full object-cover transition-transform duration-300" style={{ objectPosition: current.position, transform: `scale(${current.zoom})`, transformOrigin: current.position }} />}
           </div>
           <div className="mt-3 grid grid-cols-3 gap-3" role="group" aria-label="Product images">
             {views.map((v, i) => (

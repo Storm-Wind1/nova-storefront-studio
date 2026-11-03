@@ -98,7 +98,7 @@ function Newsletter() {
         <form noValidate className="mt-6 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => {
           e.preventDefault();
           const r = emailSchema.safeParse(email);
-          if (!r.success) { setError(r.error.issues[0].message); return; }
+          if (!r.success) { setError(r.error.issues[0]?.message ?? "Enter a valid email address"); return; }
           setError(""); setDone(true); setEmail(""); toast.success("Subscribed (demo)");
         }}>
           <label htmlFor="nl-email" className="sr-only">Email address</label>
