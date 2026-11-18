@@ -19,6 +19,14 @@ A responsive, accessible e-commerce **frontend concept demo** for a fictional ca
 - Orders, newsletter and contact forms are simulated in the browser only. Only the most recent demo order is kept.
 - Stock levels do not decrease after an order.
 
+## Open source and contributions
+
+The original application source code and documentation are available under the [MIT License](LICENSE). You can study, modify, and redistribute the code under its terms.
+
+**Asset exception:** The AI-generated product and hero images in `src/assets/*.jpg` are **not** licensed under MIT. Replace them with appropriately licensed visuals if you redistribute the application. Fonts and third-party libraries retain their own licenses. See [ASSETS.md](ASSETS.md) for details.
+
+Bug reports, accessible UI improvements, fixes, tests, and documentation contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+
 ## Run locally
 ```sh
 npm ci
